@@ -20,4 +20,13 @@ c.SwaggerEndpoint("/swagger/v1/swagger.json", "PizzaStore API V1");
 });
 app.MapGet("/", () => "Bonjour Sénégal!");
 app.MapGet("/pizzas", async (PizzaDb db) => await db.Pizzas.ToListAsync());
+
+app.MapPost("/pizza", async (PizzaDb db, PizzaEhod pizza) =>
+{
+await db.Pizzas.AddAsync(pizza);
+await db.SaveChangesAsync();
+return Results.Created($"/pizza/{pizza.Id}", pizza);
+});
+
+app.MapGet("/pizza/{id}", async (PizzaDb db, int id) => await db.Pizzas.FindAsync(id));
 app.Run();
